@@ -1,9 +1,10 @@
+/* eslint-disable react/jsx-curly-newline */
 import { useState, useMemo, useCallback, useContext } from 'react';
-import { useRouter } from 'next/router';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { useTheme } from 'next-themes';
 
+import { NFTContext } from '../context/NFTContext';
 import { Button, Input } from '../components';
 import images from '../assets';
 
@@ -15,9 +16,15 @@ const CreateNft = () => {
     price: '',
   });
   const { theme } = useTheme();
+  const { uploadToIPFS } = useContext(NFTContext);
 
-  const onDrop = useCallback(() => {
-    // upload image to the ipfs
+  const onDrop = useCallback(async (acceptedFile) => {
+    console.log({ acceptedFile });
+    const url = await uploadToIPFS(acceptedFile[0]);
+
+    console.log({ url });
+
+    setFileUrl(url);
   }, []);
 
   const {
@@ -38,6 +45,7 @@ const CreateNft = () => {
       ${isDragAccept} && 'border-file-accept
       ${isDragReject} && 'border-file-reject
       `,
+    // eslint-disable-next-line comma-dangle
     [isDragActive, isDragAccept, isDragReject]
   );
 
